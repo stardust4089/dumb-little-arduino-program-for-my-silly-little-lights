@@ -25,16 +25,19 @@ void setup()
   Serial.begin(9600);
   Serial.println("VL53L1X Distance Sensor tests in long distance mode(up to 4m).");
   Distance_Sensor.setTimeout(500);
-
+  if (!Distance_Sensor.init())
+  {
+    Serial.println("Failed to initialize VL53L1X Distance_Sensor!");
+    while (1);
+  }
 
   Distance_Sensor.setDistanceMode(VL53L1X::Long);
-  Distance_Sensor.setMeasurementTimingBudget(500000); // bs long number because im dumb shut up it works
-  //readings dont need to be fast at all
+  //I know its stupid long but it works so cope harder
+  Distance_Sensor.setMeasurementTimingBudget(500000);
   Distance_Sensor.startContinuous(1000);
 
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
-
   pinMode(relay, OUTPUT);      // Initialize the Atmel GPIO pin as an output
 }
 
@@ -42,6 +45,9 @@ void loop()
 {
   Distance_Sensor.read();
   int distance_mm = Distance_Sensor.ranging_data.range_mm;
+
+  Serial.print("Distance(mm): ");
+  Serial.println(distance_mm);
 
   // Clear the LCD display and set the cursor to the first row
   lcd.clear();
@@ -52,15 +58,11 @@ void loop()
   lcd.setCursor(0, 1);
   lcd.print(distance_mm);
 
-  // Delay for a moment to control the update rate
-  delay(10); // You can adjust this delay to control the display update rate
-
   if (distance_mm < 200){
     digitalWrite(relay, LOW);   // Turn the relay off
   }
   else{
     digitalWrite(relay, HIGH);   // Turn the relay on 
   }
-    
+  
 }
-
