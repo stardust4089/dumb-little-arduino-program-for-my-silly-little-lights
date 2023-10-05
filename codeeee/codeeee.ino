@@ -58,11 +58,11 @@ void loop()
   lcd.setCursor(0, 1);
   lcd.print(distance_mm);
 
-  if (distance_mm < 200){
-    digitalWrite(relay, LOW);   // Turn the relay off
+  if (distance_mm < 1000 && distance_mm > 200){
+    digitalWrite(relay, HIGH);   // Turn the relay off
   }
   else{
-    digitalWrite(relay, HIGH);   // Turn the relay on 
+    digitalWrite(relay, LOW);   // Turn the relay on 
   }
   
 }
